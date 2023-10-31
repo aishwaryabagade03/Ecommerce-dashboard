@@ -64,10 +64,11 @@ export const Adduser = async (req, res) => {
       if (req.file !== undefined) {
         image = req.file.filename;
       }
+      const hashPassword = bcrypt.hashSync(Password, 10);
       const UserData = new UserModel({
         Name:Name,
         Email: Email,
-        Password: Password,
+        Password: hashPassword,
         Phonenumber: Phonenumber,
         DOB: DOB,
         Gender: Gender,
@@ -234,6 +235,7 @@ export const Signup = async (req, res) => {
     if (Newuser) {
       return res.status(201).json({
         message: "Successfully Registered",
+        success : true,
       });
     }
   } catch (error) {
@@ -246,21 +248,10 @@ export const Signup = async (req, res) => {
 export const Signin = async (req, res) => {
   try {
     const { Email, Password } = req.body;
-    const IsEmail = validator.isEmail(Email);
-    const IsPassword = validator.isStrongPassword(Password);
-    if (!IsEmail) {
-      return res.status(400).json({
-        message: "Invalid email",
-      });
-    } else if (!IsPassword) {
-      return res.status(400).json({
-        message: "Passsword must be minLength: 6",
-      });
-    }
     const Userexist = await UserModel.findOne({ Email: Email });
     if (!Userexist) {
       return res.status(400).json({
-        message: "User already exist",
+        message: "User does not exist",
       });
     }
     const ComparePassword = await bcrypt.compare(Password, Userexist.Password);
@@ -282,6 +273,7 @@ export const Signin = async (req, res) => {
     return res.status(200).json({
       data: Userexist,
       token: Token,
+      success : true,
       message: "Successfully login",
     });
   } catch (error) {

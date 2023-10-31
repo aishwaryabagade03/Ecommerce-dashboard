@@ -15,20 +15,20 @@ const UserSchema = new Schema({
     required: true,
   },
   Phonenumber: {
-    type: Number,
+    type: String,
     required: true,
   },
   DOB: {
     type: Date,
-    required: true,
+    default: null,
   },
   Gender: {
     type: String,
-    required: true,
+    default: null,
   },
   About: {
     type: String,
-    required: true,
+    default: null,
   },
   image: {
     type: String,
